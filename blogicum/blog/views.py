@@ -1,16 +1,17 @@
+from datetime import datetime
+
 from django.shortcuts import render, get_object_or_404
 
 from blog.models import Post, Category
 
-from datetime import datetime
-
 
 def index(request):
+    post_quantity: int = 5
     post_list = Post.objects.filter(
         pub_date__lt=datetime.now(),
         is_published=True,
         category__is_published=True
-    ).order_by('created_at')[0:5]
+    ).order_by('created_at')[:post_quantity]
     context = {
         'post_list': post_list
     }
@@ -25,16 +26,16 @@ def category_posts(request, category_slug):
         slug=category_slug,
         is_published=True
     )
-    post_list = Post.objects.select_related('category').filter(
+    posts = Post.objects.select_related('category').filter(
         pub_date__lt=datetime.now(),
-        category__is_published=True,
         category__slug=category_slug,
+        category__is_published=True,
         is_published=True
     )
 
     context = {
         'category': category,
-        'post_list': post_list
+        'post_list': posts
     }
     return render(request, template, context)
 
