@@ -6,14 +6,14 @@ from blog.models import Post, Category
 
 
 def index(request):
-    post_quantity: int = 5
-    post_list = Post.objects.filter(
+    POST_QUANITY: int = 5
+    posts = Post.objects.filter(
         pub_date__lt=datetime.now(),
         is_published=True,
         category__is_published=True
-    ).order_by('created_at')[:post_quantity]
+    ).order_by('created_at')[:POST_QUANITY]
     context = {
-        'post_list': post_list
+        'post_list': posts
     }
     template = 'blog/index.html'
     return render(request, template, context)
